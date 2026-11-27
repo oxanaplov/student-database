@@ -43,6 +43,14 @@ public class StudentServiceImpl implements StudentService {
     public Boolean createStudent(String name, String lastName, String seria, String number, LocalDate birthDate,
                                  String birthPlace, Faculty faculty, String phoneNumber, String email,
                                  String address) {
+
+        boolean passportExists = STUDENTS.keySet().stream()
+                .anyMatch(passport -> passport.getSeria().equals(seria)
+                        && passport.getNumber().equals(number));
+
+        if (passportExists) {
+            return false;
+        }
         Passport passport = new Passport(name, lastName, birthDate, birthPlace, seria, number);
 
         Student student = new Student(phoneNumber, email, address, faculty);

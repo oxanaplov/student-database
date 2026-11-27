@@ -21,19 +21,26 @@ public class StudentController {
         } else {
             return validationMass;
         }
-        //узнать как добавить регулярные выражение на валидацию символов звоздочки воскл знак
+
 
     }
     public Boolean deleteStudent(DeleteStudentDTO studentDTO){
-        if(studentDTO.getSeria().length() != 4){
-            return false;
-        }  if(studentDTO.getNumber().length() != 6){
+        String error = validateSeriaAndNumber(
+                studentDTO.getSeria(), studentDTO.getNumber()
+        );
+
+        if (error != null) {
             return false;
         }
+
         return studentService.deleteStudent(studentDTO.getSeria(), studentDTO.getNumber());
 
     }
     public Boolean createStudent(CreateStudentDTO createStudentDTO){
+        String error = validateSeriaAndNumber(createStudentDTO.getSeria(), createStudentDTO.getNumber());
+        if (error != null) {
+            return false;
+        }
         Faculty faculty = FACULTIES.stream()
                 .filter(facValue -> facValue.getName().equals(createStudentDTO.getFacultyName()))
                 .findFirst().orElse(null);
@@ -45,8 +52,7 @@ public class StudentController {
                     createStudentDTO.getEmail(), createStudentDTO.getAddress());
         }else {
             return false;
-        }//переписать на строчный вариант? узнать про спринг бут анотации валидация итд
-        // плюс диспетчер серулетов что это
+        }
 
     }
 }

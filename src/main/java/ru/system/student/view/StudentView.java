@@ -7,6 +7,7 @@ import ru.system.student.dto.GetStudentDTO;
 import ru.system.student.model.Student;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 import static ru.system.student.util.DateUtil.formatStringToDate;
@@ -14,55 +15,65 @@ import static ru.system.student.util.DateUtil.formatStringToDate;
 public class StudentView {
 
     private final static StudentController studentController = new StudentController();
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void runInterface(){
-        System.out.println("-------------------------");
-        System.out.println("1 Найти студента");
-        System.out.println("2 Удалить студента");
-        System.out.println("3 Добавить студента");
-        Scanner scanner = new Scanner(System.in);
-        int choice = 0;
-        try {
-            choice = scanner.nextInt();
-        } catch (NumberFormatException ex) {
-            System.out.println("ведите корректное цифровое значение");
-            runInterface();
-        }
-        if (choice == 1){
-            String value = getStudent();
-            System.out.println(value);
-            runInterface();
+        while (true) {
+            System.out.println("-------------------------");
+            System.out.println("1 Найти студента");
+            System.out.println("2 Удалить студента");
+            System.out.println("3 Добавить студента");
+            System.out.println("0 Выход"); // Показываем пользователю, как закончить работу
 
-        } else if (choice == 2) {
-            Boolean isDeleted = deleteStudent();
-            if (isDeleted){
-                System.out.println("Студент удален");
-                runInterface();
-            }else {
-                System.out.println("Не удалось удалить студента, ошибка - перепроверьте данные.");
-                runInterface();
+            int choice = 0;
+            try {
+                String enteredChoice = scanner.nextLine(); // Читаем ввод как текст
+                choice = Integer.parseInt(enteredChoice);  // Превращаем этот текст в число
+            } catch (NumberFormatException ex) {
+                System.out.println("Введите номер пункта меню");
+                continue;
             }
-        } else if (choice == 3) {
-            Boolean isCreated = createStudent();
-            if (isCreated){
-                System.out.println("Студент создан");
-                runInterface();
-            }else {
-                System.out.println("Не удалось создать студента, ошибка - перепроверьте данные.");
-                runInterface();
+            if (choice == 0) {
+                return;
             }
-        } else {
-            System.out.println("ведите корректные значения");
-            runInterface();
+
+            if (choice == 1) {
+                String value = getStudent();
+                System.out.println(value);
+
+
+            } else if (choice == 2) {
+                Boolean isDeleted = deleteStudent();
+                if (isDeleted) {
+                    System.out.println("Студент удален");
+
+                } else {
+                    System.out.println("Не удалось удалить студента, ошибка - перепроверьте данные.");
+
+                }
+            } else if (choice == 3) {
+                Boolean isCreated = createStudent();
+                if (isCreated) {
+                    System.out.println("Студент создан");
+
+                } else {
+                    System.out.println("Не удалось создать студента, ошибка - перепроверьте данные.");
+
+                }
+            } else {
+                System.out.println("ведите корректные значения");
+
+            }
+
         }
     }
     private static String getStudent(){
         System.out.println("Введите серию паспорта");
-        Scanner scanner = new Scanner(System.in);
+
         String seria = scanner.nextLine();
 
         System.out.println("Введите номер паспорта");
-        scanner = new Scanner(System.in);
+
         String number = scanner.nextLine();
 
         GetStudentDTO getStudentDTO = new GetStudentDTO(seria, number);
@@ -71,11 +82,11 @@ public class StudentView {
 
     private static Boolean deleteStudent(){
         System.out.println("Введите серию паспорта");
-        Scanner scanner = new Scanner(System.in);
+
         String seria = scanner.nextLine();
 
         System.out.println("Введите номер паспорта");
-        scanner = new Scanner(System.in);
+
         String number = scanner.nextLine();
 
         DeleteStudentDTO deleteStudentDTO = new DeleteStudentDTO(seria, number);
@@ -84,44 +95,53 @@ public class StudentView {
 
     private static Boolean createStudent(){
         System.out.println("Введите серию паспорта");
-        Scanner scanner = new Scanner(System.in);
+
         String seria = scanner.nextLine();
 
         System.out.println("Введите номер паспорта");
-        scanner = new Scanner(System.in);
+
         String number = scanner.nextLine();
 
         System.out.println("Введите адрес");
-        scanner = new Scanner(System.in);
+
         String address = scanner.nextLine();
 
         System.out.println("Введите Имя");
-        scanner = new Scanner(System.in);
+
         String name = scanner.nextLine();
 
         System.out.println("Введите Фамилию");
-        scanner = new Scanner(System.in);
+
         String lastName = scanner.nextLine();
 
-        System.out.println("Введите дату рождения");
-        scanner = new Scanner(System.in);
-        String birthDate = scanner.nextLine();
-        LocalDate birthDateFormated = formatStringToDate(birthDate);
+        LocalDate birthDateFormated;
+
+        while (true) {
+            System.out.println("Введите дату рождения в формате ГГГГ-ММ-ДД, например 2001-05-17");
+            String birthDate = scanner.nextLine();
+
+            try {
+                birthDateFormated = formatStringToDate(birthDate);
+                break;
+            } catch (DateTimeParseException ex) {
+                System.out.println("Не удалось распознать дату. Попробуйте ещё раз.");
+            }
+        }
 
         System.out.println("Введите место рождения");
-        scanner = new Scanner(System.in);
+
         String birthPlace = scanner.nextLine();
 
         System.out.println("Введите название факультета");
-        scanner = new Scanner(System.in);
+
         String facultyName = scanner.nextLine();
 
         System.out.println("Введите номер телефона");
-        scanner = new Scanner(System.in);
+
         String phoneNumber = scanner.nextLine();
 
         System.out.println("Введите електронный адрес");
-        scanner = new Scanner(System.in);
+
         String email = scanner.nextLine();
 
         CreateStudentDTO createStudentDTO = new CreateStudentDTO(name, lastName, seria, number, birthDateFormated, birthPlace,
