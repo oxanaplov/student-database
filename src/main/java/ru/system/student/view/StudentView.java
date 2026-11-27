@@ -27,7 +27,7 @@ public class StudentView {
 
             int choice = 0;
             try {
-                String enteredChoice = scanner.nextLine(); // Читаем ввод как текст
+                String enteredChoice = scanner.nextLine();
                 choice = Integer.parseInt(enteredChoice);  // Превращаем этот текст в число
             } catch (NumberFormatException ex) {
                 System.out.println("Введите номер пункта меню");
